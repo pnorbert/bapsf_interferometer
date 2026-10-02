@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 mkdir -p data/logs
 
 run_name=bobby-nersc-24h-20261001
@@ -25,13 +24,14 @@ fi
 # Step 0 is immediate; steps 1 through 28799 follow at a three-second cadence.
 # The final snapshot is therefore scheduled at 23:59:57.
 nohup python3 -m interf_sim \
+    --trc-dir /home/norbert/Software/LAPD/data \
     --period 3 \
     --limit 28800 \
     --repeat-traces \
     --raw-output streamer/conf/bobby_to_nersc_24h_20261001.conf \
     --raw-output-private-key keys/testkey \
     --raw-output-timing-log ${timing_log} \
-    --buffer-seconds 600 \
+    --raw-output-buffer-seconds 600 \
     >"$stdout_log" 2>&1 < /dev/null &
 producer_pid=$!
 printf '%s\n' "$producer_pid" > "$pid_file"
